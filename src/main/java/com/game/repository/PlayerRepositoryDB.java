@@ -12,11 +12,11 @@ import org.springframework.stereotype.Repository;
 import javax.annotation.PreDestroy;
 import java.util.List;
 import java.util.Optional;
-import java.util.Properties;
+
 
 @Repository(value = "db")
 public class PlayerRepositoryDB implements IPlayerRepository {
-private final SessionFactory sessionFactory;
+    private final SessionFactory sessionFactory;
 
     public PlayerRepositoryDB() {
 
@@ -27,7 +27,7 @@ private final SessionFactory sessionFactory;
 
     @Override
     public List<Player> getAll(int pageNumber, int pageSize) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             NativeQuery query = session.createNativeQuery("SELECT * FROM rpg.player ", Player.class);
             query.setFirstResult(pageNumber * pageSize);
             query.setMaxResults(pageSize);
@@ -38,7 +38,7 @@ private final SessionFactory sessionFactory;
 
     @Override
     public int getAllCount() {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Query<Long> query = session.createNamedQuery("player.getAllCount", Long.class);
             return Math.toIntExact(query.uniqueResult());
         }
@@ -46,8 +46,8 @@ private final SessionFactory sessionFactory;
 
     @Override
     public Player save(Player player) {
-        try(Session session = sessionFactory.openSession()) {
-            Transaction  transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
             session.save(player);
             transaction.commit();
             return player;
@@ -56,8 +56,8 @@ private final SessionFactory sessionFactory;
 
     @Override
     public Player update(Player player) {
-        try(Session session = sessionFactory.openSession()) {
-            Transaction  transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
             session.persist(player);
             transaction.commit();
             return player;
@@ -66,7 +66,7 @@ private final SessionFactory sessionFactory;
 
     @Override
     public Optional<Player> findById(long id) {
-        try(Session session = sessionFactory.openSession()) {
+        try (Session session = sessionFactory.openSession()) {
             Player player = session.find(Player.class, id);
             return Optional.ofNullable(player);
 
@@ -76,8 +76,8 @@ private final SessionFactory sessionFactory;
 
     @Override
     public void delete(Player player) {
-        try(Session session = sessionFactory.openSession()) {
-            Transaction  transaction = session.beginTransaction();
+        try (Session session = sessionFactory.openSession()) {
+            Transaction transaction = session.beginTransaction();
             session.remove(player);
             transaction.commit();
         }
@@ -86,6 +86,6 @@ private final SessionFactory sessionFactory;
 
     @PreDestroy
     public void beforeStop() {
-sessionFactory.close();
+        sessionFactory.close();
     }
 }
